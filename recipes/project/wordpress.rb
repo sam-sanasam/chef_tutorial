@@ -21,7 +21,8 @@ service "apache2" do
    end
 ## Setting up the root password
 execute "root password" do
-	command "mysqladmin -u root password rootpassword"
+	command "mysqladmin -u root password rootpassword && touch /var/mysqlrootsetup"
+	not_if {File.exists?("/var/mysqlrootsetup")}
  end
 
 # Downloading myqsl command
@@ -29,12 +30,14 @@ execute "root password" do
 remote_file "mysqlcommands" do
  source "https://gitlab.com/roybhaskar9/devops/raw/master/coding/chef/chefwordpress/files/default/mysqlcommands"
  path "/tmp/mysqlcommands"
+ not_if {File.exists?("/tmp/mysqlcommands")}
 end
 
  
 ### 
-execute "mysql -uroot -prootpassword < /tmp/mysqlcommands" do
+execute "mysql -uroot -prootpassword < /tmp/mysqlcommands && touch /var/mysqlimportcomplete" do
 	command "mysql -uroot -prootpassword < /tmp/mysqlcommands"
+	not_if {File.exists?("/var/mysqlimportcomplete")}
  end
 
 ## downloading wordpress
@@ -42,12 +45,14 @@ execute "mysql -uroot -prootpassword < /tmp/mysqlcommands" do
 remote_file " wordpress_latest" do 
  	source "https://wordpress.org/latest.zip"
  	path "/tmp/latest.zip"
+	not_if {File.exists?("/tmp/latest.zip")}
  end
 
 
 # unzipping the wordpress
 execute " unzip the wordpress" do 
 	command "unzip /tmp/latest.zip -d /var/www/html"
+	not_if {File.exists? ("/var/www/html/wordpress/index.php")}
  end
 
 
@@ -55,6 +60,7 @@ execute " unzip the wordpress" do
 remote_file "wp-config-sample" do
 	source "https://gitlab.com/roybhaskar9/devops/raw/master/coding/chef/chefwordpress/files/default/wp-config-sample.php"
 	path "/var/www/html/wordpress/wp-config.php"
+	not_if {File.exists? ("/var/www/html/wordpress/wp-config.php")}
  end
 
 ##
