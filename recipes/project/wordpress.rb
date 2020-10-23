@@ -51,8 +51,8 @@ remote_file " wordpress_latest" do
 
 # unzipping the wordpress
 execute " unzip the wordpress" do 
-	command "unzip /tmp/latest.zip -d /var/www/html"
-	not_if {File.exists? ("/var/www/html/index.php")}
+	command "unzip /tmp/latest.zip -d /var/www/html && touch /var/www/html/wordpress/index.php"
+	not_if {File.exists? ("/var/www/html/wordpress/index.php")}
  end
 
 
