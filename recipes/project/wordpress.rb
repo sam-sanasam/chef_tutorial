@@ -35,8 +35,8 @@ end
 
  
 ### 
-execute "mysql -uroot -prootpassword < /tmp/mysqlcommands && touch /var/mysqlimportcomplete" do
-	command "mysql -uroot -prootpassword < /tmp/mysqlcommands"
+execute "mysql import" do
+	command "mysql -uroot -prootpassword < /tmp/mysqlcommands && touch /var/mysqlimportcomplete"
 	not_if {File.exists?("/var/mysqlimportcomplete")}
  end
 
